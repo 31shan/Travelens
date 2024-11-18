@@ -6,7 +6,7 @@ import random
 
 # Create your views here.
 
-
+dfsg
 
 def display_city_events(request):
     city_name = request.GET.get('city')
