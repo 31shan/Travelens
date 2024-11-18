@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reschedule Event</title>
+</head>
+<body>
+    <h1>Reschedule Event</h1>
+
+    <p>Event "{{ missed_event.event }}" scheduled for Day {{ missed_event.date }} cannot proceed due to conditions.</p>
+
+    {% if suggested_replacement %}
+        <p>Suggested replacement: "{{ suggested_replacement.event }}" on Day {{ suggested_replacement.date }}.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="confirm">Confirm Reschedule</button>
+        </form>
+    {% else %}
+        <p>No suitable replacement found.</p>
+    {% endif %}
+
+    <a href="{% url 'original_events_displayed' %}">Back to Events</a>
+</body>
+</html>

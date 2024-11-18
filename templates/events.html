@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+</head>
+<body>
+    <h1>Events</h1>
+
+    <form method="get" action="">
+        <label for="city">Search by City:</label>
+        <input type="text" name="city" placeholder="Enter city name" value="{{ city|default_if_none:'' }}" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <form method="get" action="">
+        <input type="hidden" name="city" value="{{ city }}">
+        <button type="submit" name="prioritize_special" value="true">Prioritize Special Entries</button>
+    </form>
+
+    {% if events %}
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Slot of Day</th>
+            <th>Event</th>
+            <th>Temperature</th>
+            <th>Condition</th>
+            <th>Priority</th>
+            <th>Action</th>
+        </tr>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.date }}</td>
+                <td>{{ event.slot_of_day }}</td>
+                <td>{{ event.event }}</td>
+                <td>{{ event.temperature }}</td>
+                <td>{{ event.condition }}</td>
+                <td>{{ event.priority }}</td>
+                <td>
+                    {% if event.special %}
+                        <a href="{% url 'reschedule_suggestions' %}?missed_event_id={{ event.id }}">Reschedule</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</html>

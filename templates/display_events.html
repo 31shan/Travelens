@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+</head>
+<body>
+    <h1>Events</h1>
+
+    <!-- City Search Form -->
+    <form method="get" action="">
+        <label for="city">Search by City:</label>
+        <input type="text" name="city" placeholder="Enter city name" value="{{ city|default_if_none:'' }}" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if city %}
+    <form method="get" action="">
+        <input type="hidden" name="city" value="{{ city }}">
+        <button type="submit" name="prioritize_special" value="true">Prioritize Special Entries</button>
+    </form>
+    {% endif %}
+    
+    <!-- Link to manual revert URL -->
+    <a href="{% url 'display_city_events' %}">Go to Manual Revert Page</a>
+
+    {% if events %}
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Slot of Day</th>
+            <th>Event</th>
+            <th>Temperature</th>
+            <th>Condition</th>
+        </tr>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.id }}</td>
+            <td>{{ event.date }}</td>
+            <td>{{ event.slot_of_day }}</td>
+            <td>{{ event.event }}</td>
+            <td>{{ event.temperature }}</td>
+            <td>{{ event.display_condition }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif city %}
+        <p>No results found for "{{ city }}".</p>
+    {% endif %}
+
+    
+</body>
+</html>
+

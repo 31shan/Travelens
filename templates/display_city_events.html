@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>City Events</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Events in {{ city }}</h1>
+    <form method="get">
+        <label for="city">Search by City:</label>
+        <input type="text" name="city" placeholder="Enter city name" value="{{ city|default_if_none:'' }}" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Slot of Day</th>
+                <th>Event</th>
+                <th>Temperature</th>
+                <th>Condition</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.id }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.slot_of_day }}</td>
+                    <td>{{ event.event }}</td>
+                    <td>{{ event.temperature }}°C</td>
+                    <td>{{ event.condition }}</td>
+                    <td>
+                        <a href="{% url 'edit_condition' %}?record_id={{ event.id }}">Edit</a>
+                        {% if event.is_modified %}
+                            <form action="{% url 'edit_condition' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="record_id" value="{{ event.id }}">
+                                <input type="hidden" name="condition" value="{{ event.original_condition }}">
+                                <button type="submit">Revert</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

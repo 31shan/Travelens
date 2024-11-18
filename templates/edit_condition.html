@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Edit Condition</title></head>
+<body>
+    <h1>Edit Condition</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="record_id">Record ID:</label>
+        <input type="text" name="record_id" required>
+        
+        <label for="condition">New Condition:</label>
+        <input type="text" name="condition" required>
+        
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
