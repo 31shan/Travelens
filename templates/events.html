@@ -6,48 +6,64 @@
 <body>
     <h1>Events</h1>
 
-    <form method="get" action="">
+    <!-- Search Form -->
+    <form method="get" action="{% url 'display_with_condition' %}">
         <label for="city">Search by City:</label>
-        <input type="text" name="city" placeholder="Enter city name" value="{{ city|default_if_none:'' }}" required>
+        <input type="text" name="city" placeholder="Enter city name" value="{{ city|default_if_none:'' }}">
         <button type="submit">Search</button>
     </form>
 
-    <form method="get" action="">
+    <!-- Toggle Button -->
+    {% if show_special %}
+    <form method="get" action="{% url 'display_with_condition' %}">
         <input type="hidden" name="city" value="{{ city }}">
-        <button type="submit" name="prioritize_special" value="true">Prioritize Special Entries</button>
+        <button type="submit">Show Normal Conditions</button>
+    </form>
+    {% else %}
+    <form method="get" action="{% url 'display_with_special' %}">
+        <input type="hidden" name="city" value="{{ city }}">
+        <button type="submit">Show Special Conditions</button>
+    </form>
+    {% endif %}
+
+    <form method="get" action="{% url 'reset_modifications' %}">
+        <button type="submit">Reset Modifications</button>
     </form>
 
+    <!-- Table -->
     {% if events %}
     <table border="1">
         <tr>
-            <th>ID</th>
+            <th>City</th>
             <th>Date</th>
-            <th>Slot of Day</th>
+            <th>Slot</th>
             <th>Event</th>
             <th>Temperature</th>
             <th>Condition</th>
-            <th>Priority</th>
-            <th>Action</th>
+            <th>Modified</th>
         </tr>
         {% for event in events %}
-            <tr>
-                <td>{{ event.id }}</td>
-                <td>{{ event.date }}</td>
-                <td>{{ event.slot_of_day }}</td>
-                <td>{{ event.event }}</td>
-                <td>{{ event.temperature }}</td>
-                <td>{{ event.condition }}</td>
-                <td>{{ event.priority }}</td>
-                <td>
-                    {% if event.special %}
-                        <a href="{% url 'reschedule_suggestions' %}?missed_event_id={{ event.id }}">Reschedule</a>
-                    {% endif %}
-                </td>
-            </tr>
+        <tr>
+            <td>{{ event.city }}</td>
+            <td>{{ event.date }}</td>
+            <td>{{ event.slot_of_day }}</td>
+            <td>{{ event.event }}</td>
+            <td>{{ event.temperature }}</td>
+            {% if show_special %}
+            <td>{{ event.special }}</td>
+            {% else %}
+            <td>{{ event.condition }}</td>
+            {% endif %}
+            <td>{{ event.is_modified }}</td>
+        </tr>
         {% endfor %}
     </table>
-    {% else %}
-        <p>No results found.</p>
+    {% elif city %}
+        <p>No results found for "{{ city }}".</p>
     {% endif %}
+
+
+
 </body>
 </html>
+

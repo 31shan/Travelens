@@ -25,8 +25,8 @@ class CheckTab(models.Model):
     original_condition = models.TextField(max_length=50, blank=True, null=True)
     is_modified = models.BooleanField(default=False)
 
-    is_missed = models.BooleanField(default=False)
-    priority = models.IntegerField(default=generate_priority)
+    #is_missed = models.BooleanField(default=False)
+    #priority = models.IntegerField(default=generate_priority)
 
 
     def __str__(self):
