@@ -27,6 +27,7 @@
     {% endif %}
 
     <form method="get" action="{% url 'reset_modifications' %}">
+        <input type="hidden" name="city" value="{{ city }}">
         <button type="submit">Reset Modifications</button>
     </form>
 
@@ -34,6 +35,7 @@
     {% if events %}
     <table border="1">
         <tr>
+            <th>ID</th>
             <th>City</th>
             <th>Date</th>
             <th>Slot</th>
@@ -41,28 +43,31 @@
             <th>Temperature</th>
             <th>Condition</th>
             <th>Modified</th>
+            <th>Priority</th>
         </tr>
         {% for event in events %}
         <tr>
+            <td>{{ event.id }}</td>
             <td>{{ event.city }}</td>
             <td>{{ event.date }}</td>
             <td>{{ event.slot_of_day }}</td>
             <td>{{ event.event }}</td>
             <td>{{ event.temperature }}</td>
-            {% if show_special %}
-            <td>{{ event.special }}</td>
-            {% else %}
-            <td>{{ event.condition }}</td>
-            {% endif %}
+            <td>
+                {% if show_special %}
+                    {{ event.special }}
+                {% else %}
+                    {{ event.condition }}
+                {% endif %}
+            </td>
             <td>{{ event.is_modified }}</td>
+            <td>{{ event.priority|default:"None" }}</td>
         </tr>
         {% endfor %}
     </table>
     {% elif city %}
         <p>No results found for "{{ city }}".</p>
     {% endif %}
-
-
 
 </body>
 </html>

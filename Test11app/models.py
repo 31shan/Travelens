@@ -3,8 +3,6 @@ import random
 
 # Create your models here.
 
-def generate_priority():
-    return random.randint(1, 5)
 
 class CheckTab(models.Model):
     slot_choices = [
@@ -26,7 +24,7 @@ class CheckTab(models.Model):
     is_modified = models.BooleanField(default=False)
 
     #is_missed = models.BooleanField(default=False)
-    #priority = models.IntegerField(default=generate_priority)
+    priority = models.IntegerField(blank=True, null=True)
 
 
     def __str__(self):
@@ -35,20 +33,23 @@ class CheckTab(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.condition != self.original_condition:
-            self.is_modified = True
-        else:
-            self.is_modified = False
+        if self.special:
+            if self.condition != self.original_condition:
+                self.is_modified = True
+            else:
+                self.is_modified = False
+
         super().save(*args, **kwargs)
 
-    def new_save(self, *args, **kwargs):
-        if not self.priority:
-            self.priority = generate_priority()
-        super().save(*args, **kwargs)
+
+    def generate_priority(self):
+        self.priority = random.choice([1, 2, 3])
+        self.save()
 
     def revert_condition(self):
         self.condition = self.original_condition
         self.is_modified = False
+        self.priority = None
         self.save()
 
     def get_display_condition(self, prioritize_special=False):

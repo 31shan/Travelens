@@ -104,47 +104,33 @@ def reschedule_suggestions(request):
 '''
 ######
 
-
 def display_with_condition(request):
     city = request.GET.get('city', '')
     events = CheckTab.objects.filter(city__iexact=city)
-
     for event in events:
-        event.is_modified = False
-    return render(request, 'events.html', {'events': events, 'show_special': False, 'city': city})
+        event.condition = event.original_condition
+
+        event.save()
+    return render(request, 'events.html', {'events': events, 'show_special': False, 'city': city,})
 
 def display_with_special(request):
     city = request.GET.get('city', '')
     events = CheckTab.objects.filter(city__iexact=city)
-
     for event in events:
-        event.is_modified = event.special != event.condition
-    return render(request, 'events.html', {'events': events, 'show_special': True, 'city': city})
+        if event.special:
+            event.condition = event.special
+            if event.condition != event.original_condition:
+                event.is_modified = True
+        event.save()
+    return render(request, 'events.html', {'events': events, 'show_special': True, 'city': city,})
 
 def reset_modifications(request):
     city = request.GET.get('city', '')
     events = CheckTab.objects.filter(city__iexact=city)
     for event in events:
-        event.is_modified = False
-    return render(request, 'events.html', {'events': events, 'show_special': False, 'city': ''})
-'''
+        event.revert_condition()
+        event.generate_priority()
+    return render(request, 'events.html', {'events': events, 'show_special': False, 'city': city,})
 
 
-def display_table(request, special_mode=False):
-    city = request.GET.get('city', '')  # Retrieve city from GET parameters
-    events = CheckTab.objects.filter(city__iexact=city)  # Filter by city (case-insensitive)
 
-    # Update `is_modified` field based on mode (in memory, temporary)
-    for event in events:
-        if special_mode:
-            event.is_modified = event.special != event.condition  # Highlight mismatched rows
-        else:
-            event.is_modified = False  # Reset modifications
-
-    return render(request, 'events.html', {
-        'events': events,
-        'show_special': special_mode,  # Toggle between Condition and Special view
-        'city': city
-    })
-
-'''

@@ -8,5 +8,6 @@ urlpatterns = [
     path('events/', views.display_with_condition, name='display_with_condition'),
     path('special/', views.display_with_special, name='display_with_special'),
     path('reset_modifications/', views.reset_modifications, name='reset_modifications'),
+
     ]
 
